@@ -1,9 +1,9 @@
-# 한국 수어 학습 사이트 (대만 수어 인식 + SignBridge 비교 엔진)
+# ITDA 잇다 · 한국수어 개발 기록
 
 ## ITDA 첫 연습 버전
 
 저장소 폴더에서 `python -m http.server 8000 --bind 127.0.0.1 --directory web`을 실행한 뒤
-[한국수어 연습 화면](http://127.0.0.1:8000/practice/)을 연다. 기존 사이트 상단의 **한국수어 연습** 링크로도 들어갈 수 있다.
+[한국수어 연습 화면](http://127.0.0.1:8000/)을 연다. 자세한 실행 순서는 [사용 안내](README.md)에 있다.
 
 Windows에서 `python` 명령이 설치된 Python을 찾지 못하면 실행 파일 경로를 직접 지정한다. 이 작업 폴더를 검증한 PC의 PowerShell에서는 아래 명령을 사용할 수 있다.
 
@@ -23,7 +23,9 @@ Windows에서 `python` 명령이 설치된 Python을 찾지 못하면 실행 파
 
 `node --test tests/itda-practice.test.mjs`로 지원 단어 연결, 모델 출력과 판정 일치, 촬영 실패 처리를 확인할 수 있다. 예본을 입력한 테스트 결과는 신규 사용자의 웹캠 정확도와 구분한다. 모델과 미디어 출처는 [출처 고지](THIRD_PARTY_NOTICES.md)에 있다.
 
-## 기존 인식 및 비교 엔진
+## 초기 인식 및 비교 기능 실험
+
+아래는 대만 수어 원본을 바탕으로 진행한 초기 비교 기능 실험의 개발 기록이다. 해당 화면은 `/taiwan.html`에 있다. 현재 한국수어 연습에서는 O/X와 인식 점수를 제공하며, 세부 교정 기능은 추후 개발 범위다.
 
 사용자가 웹캠으로 수어를 하면
 
@@ -51,16 +53,15 @@ Windows에서 `python` 명령이 설치된 Python을 찾지 못하면 실행 파
      → [SignBridge 기반] feedback.js           무엇이 얼마나 다른지
 ```
 
-원본 대만 코드는 `main` 브랜치, 우리 작업은 `korean-learning` 브랜치: `git log --oneline main..korean-learning`
+초기 실험은 원본 저장소에서 분기한 로컬 `korean-learning` 브랜치에서 진행했다.
 
-## 바로 해보기
+## 초기 비교 기능 실험 다시 보기
 
-    python3 -m http.server 8000 --directory web      # http://localhost:8000 (카메라는 localhost나 HTTPS에서만)
+    python3 -m http.server 8000 --directory web      # http://localhost:8000/taiwan.html
     node tests/learning.test.mjs                      # 학습 모드 (정답 판정, 비교, 관절 규칙) 15개
     node tests/signbridge.test.mjs                    # SignBridge 이식 (원본 테스트 13개 + 어댑터) 14개
 
-오른쪽 아래 "수어 연습 (시험판)" 패널에서 단어를 고르고, 사이트의 카메라를 켠 뒤 시작을 누른다.
-**지금 들어 있는 모델은 대만 수어 25단어 모델**이라 단어 목록이 중국어로 나온다. 한국 수어 모델로 바꾸면 한국어 단어가 나온다.
+초기 시험 화면 오른쪽 아래의 "수어 연습 (시험판)" 패널에서 단어를 고른다. 초기 실험에는 대만 수어 25단어 모델과 중국어 단어 목록을 사용했다.
 
 ## 파일별 역할과 상태
 
@@ -82,7 +83,7 @@ Windows에서 `python` 명령이 설치된 Python을 찾지 못하면 실행 파
 | `tools/make_reference.py` | 녹화들 중 대표 기준 동작을 골라 JSON으로 | SignBridge `find_medoid`·DTW·정규화 이식 + 대만 좌표 처리 |
 | `tests/` | 학습 모드 테스트, SignBridge 이식 테스트, 가상 손 생성기 | **새로 작성** (SignBridge 원본 테스트 포함) |
 | `training/*.py`, `tools/錄影工具.py` 등 | 학습·검증, 녹화·분할·추출·변환 | 대만 원본 그대로 (화면·메시지는 중국어) |
-| `web/model/` | 모델 | 대만 모델 → 한국 모델로 교체 예정 |
+| `web/model/` | 초기 실험용 모델 | 대만 수어 25단어 모델 |
 | `web/guide.json`, `web/js/speech.js`, `functions/` | 대만 교육 영상 링크, 문장 읽기 | 학습 모드에서는 안 씀 |
 
 ### SignBridge feedback.ts에서 고친 점
@@ -99,7 +100,9 @@ Windows에서 `python` 명령이 설치된 Python을 찾지 못하면 실행 파
 
 `stability.ts`, `signGate.ts`(대만 `continuous-core.js`와 같은 역할), 분류기(`dtwClassifier`, `knn`, `mlp`, `sequenceClassifier` — 단어 인식은 대만 LSTM), MediaPipe·카메라·그리기(`landmarker`, `useHandTracking`, `drawing` — 대만 `app.js`), React 화면·three.js 아바타·ASL/PSL 모델.
 
-## 한국 수어 모델과 기준 동작 만들기
+## 초기 모델과 기준 동작 제작 절차
+
+아래는 초기 실험에서 검토한 제작 절차다. 일부 도구는 [원본 저장소](https://github.com/Meganlin0000/taiwan-sign-language-recognition)의 `tools/`에 있다.
 
 1. 환경: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt` (mediapipe 0.10.21 고정, 올리지 말 것). 변환용은 따로 `requirements-convert.txt`
 2. 영상: `data/片段/{단어}/{단어}_{시연자}_{배치}_{번호}.mp4` — 녹화 도구 `.venv/bin/python tools/錄影工具.py` (http://127.0.0.1:5003).
