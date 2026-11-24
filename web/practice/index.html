@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="시범을 보고 웹캠으로 따라 하는 ITDA 한국수어 연습.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self'; img-src 'self' data:; media-src 'self' blob: https://sldict.korean.go.kr; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>ITDA 잇다 · 한국수어 연습</title>
+  <link rel="stylesheet" href="practice.css">
+  <script defer src="../vendor/holistic/holistic.js"></script>
+  <script type="module" src="practice.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="./" aria-label="ITDA 잇다, 연습 화면">ITDA <span>잇다</span></a>
+      <span class="topbar-label">한국수어 학습</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <h1>웹캠으로 수어 연습</h1>
+    <p class="intro">시범 영상을 보고 따라 한 뒤, 목표 단어로 인식됐는지 확인하세요.</p>
+
+    <section class="word-picker" aria-labelledby="word-heading">
+      <h2 id="word-heading">연습 단어</h2>
+      <div id="word-list" class="word-list" role="group" aria-labelledby="word-heading"></div>
+    </section>
+
+    <div class="practice-grid">
+      <section class="card demo-card" aria-labelledby="demo-heading">
+        <div class="card-header">
+          <h2 id="demo-heading">시범 영상</h2>
+          <span id="demo-word" class="selected-word"></span>
+        </div>
+        <div class="media demo-stage">
+          <video id="demo" controls playsinline preload="metadata" aria-label="선택한 단어의 시범 영상" hidden></video>
+          <p id="demo-message">시범 영상을 불러오는 중입니다.</p>
+        </div>
+        <div class="demo-footer">
+          <a id="demo-source" target="_blank" rel="noopener noreferrer" hidden>국립국어원 한국수어사전</a>
+          <button id="demo-reload" class="button subtle" type="button" hidden>다시 불러오기</button>
+        </div>
+      </section>
+
+      <section class="card camera-card" aria-labelledby="camera-heading">
+        <div class="card-header">
+          <h2 id="camera-heading">웹캠 실습</h2>
+          <span id="camera-state" class="camera-state">카메라 꺼짐</span>
+        </div>
+        <div class="media camera-stage">
+          <video id="camera" muted playsinline aria-label="내 웹캠 화면" hidden></video>
+          <canvas id="hand-overlay" aria-hidden="true" hidden></canvas>
+          <div id="camera-placeholder" class="camera-placeholder">
+            <span class="camera-icon" aria-hidden="true"></span>
+            <p>웹캠 화면</p>
+          </div>
+          <span id="countdown" class="countdown" aria-hidden="true" hidden></span>
+        </div>
+        <div class="camera-footer">
+          <p id="hand-legend" class="hand-legend" hidden><span>왼손</span><span>오른손</span></p>
+          <p id="camera-help" role="status">카메라를 켠 뒤 손과 상체가 화면에 들어오게 해 주세요.</p>
+          <div class="actions">
+            <button id="camera-toggle" class="button secondary" type="button" aria-pressed="false">카메라 켜기</button>
+            <button id="attempt-start" class="button primary" type="button" disabled>연습 시작</button>
+            <button id="model-reload" class="button subtle" type="button" hidden>모델 다시 불러오기</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card result-card" aria-labelledby="result-heading">
+      <h2 id="result-heading">연습 결과</h2>
+      <div id="result" class="result" role="status" aria-atomic="true">
+        <p id="result-mark" class="result-mark" hidden></p>
+        <p id="result-score" class="result-score" hidden></p>
+        <p id="result-message">동작을 마치면 이곳에서 결과를 확인할 수 있어요.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

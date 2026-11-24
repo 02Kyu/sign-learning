@@ -1,0 +1,16 @@
+/* 학습 모드 시험용 패널 (learning-ui.js). 사이트 보안 정책(CSP)이 인라인 스타일을 막아서 별도 파일로 둔다. */
+#learn-panel { position: fixed; right: 16px; bottom: 16px; z-index: 50; width: min(340px, calc(100vw - 32px));
+  background: #fff; color: #1b1f24; border: 1px solid #d0d7de; border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.18); font: 14px/1.5 system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+@media (prefers-color-scheme: dark) { #learn-panel { background: #1f242b; color: #e6edf3; border-color: #3a424c; } }
+#learn-panel h2 { margin: 0 0 8px; font-size: 15px; }
+#learn-panel .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+#learn-panel select, #learn-panel button { font: inherit; padding: 4px 8px; border-radius: 6px; }
+#learn-panel .verdict { margin: 10px 0 4px; font-weight: 600; min-height: 1.5em; }
+#learn-panel .verdict[data-v="pass"] { color: #1a7f37; }
+#learn-panel .verdict[data-v="wrong"], #learn-panel .verdict[data-v="timeout"] { color: #cf222e; }
+#learn-panel .score { font-size: 28px; font-weight: 700; }
+#learn-panel ul { margin: 6px 0 0; padding-left: 18px; }
+#learn-panel .hint { color: #6e7781; font-size: 12px; margin: 6px 0 0; }
+#learn-panel[data-collapsed="true"] .body { display: none; }
+#learn-panel .head { justify-content: space-between; }
