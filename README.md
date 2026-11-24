@@ -12,6 +12,14 @@ python -m http.server 8000 --bind 127.0.0.1 --directory web
 
 Windows에서 `python` 명령으로 실행되지 않으면 `py -m http.server 8000 --bind 127.0.0.1 --directory web`을 사용해 보세요.
 
+### Windows PowerShell에서 Python 경로를 직접 지정하는 방법
+
+Python 3.13이 사용자 기본 경로에 설치되어 있다면, `web` 폴더가 보이는 프로젝트 폴더에서 PowerShell을 열고 아래 명령으로 실행할 수 있습니다.
+
+```powershell
+& "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe" -m http.server 8000 --bind 127.0.0.1 --directory web
+```
+
 터미널을 열어 둔 상태에서 [한국수어 연습 시작](http://127.0.0.1:8000/)을 눌러 브라우저에서 프로그램을 엽니다.
 
 ## 연습 방법
